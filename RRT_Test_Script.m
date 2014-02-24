@@ -1,10 +1,19 @@
 clc;
 
 % params for function [vertices, edges, path] = rrt(map, q_start, q_goal, k, delta_q, p)
-map = load('map.mat');
+
+% MAP
+% map = load('map.mat');
+% q_start = [80, 70];
+% q_goal =  [707, 615];
+
+% MAZE
+map = load('maze.mat');
+q_start = [206, 198];
+q_goal = [416, 612];
+
 map = map.map;
-q_start = [80, 70];
-q_goal = [707, 615];
+
 k = 10000;
 delta_q = 50;
 p = 0.3;
