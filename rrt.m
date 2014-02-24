@@ -271,6 +271,7 @@ end
 function rrtDraw(map, q_start, q_goal, vertices, edges, path)
 
     imshow(int32(1 - map), []);
+    title('RRT (Rapidly-Exploring Random Trees)');
     % imagesc(1 - map);
     % colormap(gray);
     
@@ -287,5 +288,15 @@ function rrtDraw(map, q_start, q_goal, vertices, edges, path)
     
     plot(q_start(1), q_start(2), 'g*', 'linewidth', 1);
     plot(q_goal(1), q_goal(2), 'r*', 'linewidth', 1);
+    
+    
+    [~, pathCount] = size(path);
+    
+    for ii = 1 : pathCount - 1
+        %plot(vertices(ii, 1), vertices(ii, 2), 'cyan*', 'linewidth', 1);
+        plot([vertices(path(ii), 1), vertices(path(ii + 1), 1)], ...
+        [vertices(path(ii), 2), vertices(path(ii + 1), 2)], ...
+         'r', 'LineWidth', 2);
+    end
     
 end
