@@ -21,34 +21,49 @@ function [path_smooth] = smooth(map, path, vertices, delta)
 % path_smooth: reduced list of vertex indices from the start vertex (q_start) to the goal vertex
 % (q_goal) after applying the smoothing algorithm. The list MUST be represented as a row vector.
 
+path_smooth = path(1); % initing with goal
+currentIndex = 1; % path array iterator
+currentSmoothIndex = numel(path); % path reverse array iterator
 
-path_smooth = [0];
+while currentIndex < numel(path)
+    
+    while currentIndex < currentSmoothIndex
+        
+        if isEdgeBelongsFreeSpace(map, vertices(path(currentSmoothIndex), :), vertices(path(currentIndex), :), delta)
+            path_smooth = [path_smooth, path(currentSmoothIndex)];
+            currentIndex = currentSmoothIndex;
+            break;
+        else
+            currentSmoothIndex = currentSmoothIndex - 1;
+        end
+        
+    end
+    
+    currentSmoothIndex = numel(path);
+    
+end
 
+% rrtSmoothDraw(map, path_smooth, vertices);
 
 end
 
-function [isBelongsFreeSpace] = isEdgeQNearQNewBelongsFreeSpace(map, q_near, q_new)
+function [isBelongsFreeSpace] = isEdgeBelongsFreeSpace(map, startPoint, endPoint, delta)
     
-    % In order to check if an edge belongs to the free space,
-    % use the incremental (left) or subdivision (right) strategies.
-    % You can use 10 intermediate points.
-    intermediatePointCount = 10;
-    
-    v = double(q_new - q_near);
+    v = double(endPoint - startPoint);
     
     distance = norm(v);
     
     u = v / distance;
     
-    delta_q = distance / intermediatePointCount;
+    intermediatePointCount = distance / delta;
     
-    currentCoordinate = double(q_near);
+    currentCoordinate = double(startPoint);
     
     for ii = 1 : intermediatePointCount
         
-        currentCoordinate = currentCoordinate + (delta_q * u);
+        currentCoordinate = currentCoordinate + (delta * u);
         
-        if map(int32(currentCoordinate(2)), int32(currentCoordinate(1))) == 1 % map(q_new(1), q_new(2))
+        if map(int32(currentCoordinate(2)), int32(currentCoordinate(1))) == 1
             isBelongsFreeSpace = 0;
             return;
         end
@@ -59,14 +74,22 @@ function [isBelongsFreeSpace] = isEdgeQNearQNewBelongsFreeSpace(map, q_near, q_n
 
 end
 
-% http://math.stackexchange.com/questions/175896/finding-a-point-along-a-line-a-certain-distance-away-from-another-point
-% http://stackoverflow.com/questions/1061276/how-to-normalize-a-vector-in-matlab-efficiently-any-related-built-in-function
-function [q_new] = findQNew(q_near, q_rand, delta_q)
+function rrtSmoothDraw(map, path_smooth, vertices)
 
-    v = double(q_rand - q_near);
+    imshow(int32(1 - map), []);
+    title('RRT (Rapidly-Exploring Random Trees) - Smooth Path');
+    % imagesc(1 - map);
+    % colormap(gray);
     
-    u = v / norm(v);
+    hold on;
+
+    [~, pathCount] = size(path_smooth);
     
-    q_new = int32(double(q_near) + delta_q * u);
+    for ii = 1 : pathCount - 1
+        %plot(vertices(ii, 1), vertices(ii, 2), 'cyan*', 'linewidth', 1);
+        plot([vertices(path_smooth(ii), 1), vertices(path_smooth(ii + 1), 1)], ...
+        [vertices(path_smooth(ii), 2), vertices(path_smooth(ii + 1), 2)], ...
+         'r', 'LineWidth', 2);
+    end
     
 end

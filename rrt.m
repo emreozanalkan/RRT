@@ -105,7 +105,7 @@ for ii = 1 : k % For k samples repeat
                 % Fill path and stop break RRT function
                 path = fillSolutionPath(edges, vertices);
                 
-                rrtDraw(map, q_start, q_goal, vertices, edges, path);
+                % rrtDraw(map, q_start, q_goal, vertices, edges, path);
                 
                 toc;
                 
@@ -116,7 +116,7 @@ for ii = 1 : k % For k samples repeat
 end
 
     path = int32.empty(0, 2);
-    rrtDraw(map, q_start, q_goal, vertices, edges, path);
+    % rrtDraw(map, q_start, q_goal, vertices, edges, path);
     toc;
     
     error('RRT: solution not found :(');
