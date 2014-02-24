@@ -92,12 +92,12 @@ for ii = 1 : k % For k samples repeat
             % Add [index(q_new) index(q_near)] in edges
             [qNewIndex, ~] = size(vertices);
             edges = [edges; [int32(qNewIndex), int32(qNearIndex)]];
-            % If q_new == q_goal
             
+            % If q_new == q_goal or q_goal is on the edge
             if isequal(q_new, q_goal) || isQGoalOnQNearQNewEdge(q_near, q_new, q_goal)
                 
-                if ~isequal(q_new, q_goal) % if goal is not q_new, its on edge
-                    % goal is on the last edge, remove last vertex and add goal as vertex
+                if ~isequal(q_new, q_goal) % if goal is not q_new but its on edge
+                    % goal is on the last edge, remove last vertex and add it as goal
                     vertices = vertices(1 : (end - 1), :);
                     vertices = [vertices; q_goal];
                 end
@@ -183,6 +183,7 @@ end
 
 % http://math.stackexchange.com/questions/175896/finding-a-point-along-a-line-a-certain-distance-away-from-another-point
 % http://stackoverflow.com/questions/1061276/how-to-normalize-a-vector-in-matlab-efficiently-any-related-built-in-function
+% Generate q_new at delta_q distance from q_near in the direction to q_rand
 function [q_new] = findQNew(q_near, q_rand, delta_q)
 
     v = double(q_rand - q_near);
@@ -193,6 +194,7 @@ function [q_new] = findQNew(q_near, q_rand, delta_q)
     
 end
 
+% If the edge between q_near and q_new belongs to free space
 function [isBelongsFreeSpace] = isEdgeQNearQNewBelongsFreeSpace(map, q_near, q_new)
     
     % In order to check if an edge belongs to the free space,
@@ -247,6 +249,7 @@ function [isQGoalOnEdge] = isQGoalOnQNearQNewEdge(q_near, q_new, q_goal)
     
 end
 
+% Fill path and stop break RRT function
 function [path] = fillSolutionPath(edges, vertices)
 
     path = edges(end, 1);
@@ -268,6 +271,7 @@ function [path] = fillSolutionPath(edges, vertices)
 
 end
 
+% Plots the RRT result
 function rrtDraw(map, q_start, q_goal, vertices, edges, path)
 
     imshow(int32(1 - map), []);
