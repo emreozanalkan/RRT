@@ -8,7 +8,7 @@ Autonomous Robotics Lab
 
 Sampling-based algorithms
 
-Rapidly Exploring Random Tree
+Rapidly Exploring Random Tree (RRT)
 
 My Lab Work
 
